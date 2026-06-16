@@ -403,7 +403,7 @@ export default function FormPage() {
         )}
 
         {/* Step 7: Revisão e geração */}
-        {step === 7 && !generated && (
+        {step === 7 && (
           <Card title="Revisão Final" subtitle="Antes de gerar o currículo, confira se está tudo correto.">
             <div className="space-y-3 mb-8">
               {[
