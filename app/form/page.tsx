@@ -5,6 +5,7 @@ import { saveToStorage, loadFromStorage, clearStorage, saveCurrentStep, loadCurr
 import { validateStep1, validateStep2, validateStep3, validateStep4, validateStep6, validateStep7, ValidationErrors } from "@/lib/validators";
 import { generateResumeContent } from "@/lib/resume-generator";
 import { generatePDF, getFileName } from "@/lib/pdf-generator";
+import { TemplateId, TEMPLATES } from "@/lib/templates";
 import ProgressBar from "@/components/ProgressBar";
 import StepNavigation from "@/components/StepNavigation";
 import ExperienceFields from "@/components/ExperienceFields";
@@ -24,6 +25,7 @@ const STEPS = [
   "Formação",
   "Finalizando",
   "Revisão",
+  "Modelo",
 ];
 
 const emptyData: ResumeData = {
@@ -67,6 +69,7 @@ export default function FormPage() {
   const [data, setData] = useState<ResumeData>(emptyData);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [generated, setGenerated] = useState<GeneratedResume | null>(null);
+  const [templateId, setTemplateId] = useState<TemplateId>("classico");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [resetConfirm, setResetConfirm] = useState(false);
@@ -143,8 +146,8 @@ export default function FormPage() {
     const result = generateResumeContent(data);
     setGenerated(result);
     setIsGenerating(false);
-    setStep(7);
-    saveCurrentStep(7);
+    setStep(8);
+    saveCurrentStep(8);
     window.scrollTo(0, 0);
   };
 
@@ -152,7 +155,7 @@ export default function FormPage() {
     if (!generated) return;
     setIsDownloading(true);
     try {
-      const blob = await generatePDF(data, generated);
+      const blob = await generatePDF(data, generated, templateId);
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -171,6 +174,7 @@ export default function FormPage() {
       clearStorage();
       setData(emptyData);
       setGenerated(null);
+      setTemplateId("classico");
       setStep(0);
       setResetConfirm(false);
       saveCurrentStep(0);
@@ -435,34 +439,56 @@ export default function FormPage() {
           </Card>
         )}
 
-        {/* Step 7 com currículo gerado: Preview */}
-        {step === 7 && generated && (
+        {/* Step 8: Escolha do modelo + Preview + Download */}
+        {step === 8 && generated && (
           <div className="space-y-6">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="text-xl font-bold text-gray-800">Seu currículo está pronto!</h2>
-                  <p className="text-sm text-gray-500">Confira o preview abaixo e baixe o PDF.</p>
-                </div>
-                <div className="flex gap-3">
+            <Card title="Escolha o modelo do currículo" subtitle="Selecione o estilo visual que melhor combina com você. O conteúdo é o mesmo em todos.">
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                {TEMPLATES.map(t => (
                   <button
-                    onClick={() => setGenerated(null)}
-                    className="text-sm text-gray-500 hover:text-gray-700 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                    key={t.id}
+                    type="button"
+                    onClick={() => setTemplateId(t.id)}
+                    className={`group relative border-2 rounded-2xl p-4 text-left transition-all hover:shadow-md ${templateId === t.id ? "border-[#7A1515] bg-[#fdf5f5] shadow-md" : "border-gray-200 hover:border-gray-300 bg-white"}`}
                   >
-                    Editar dados
+                    {/* Thumbnail visual */}
+                    <TemplateThumbnail id={t.id} selected={templateId === t.id} />
+                    <div className="mt-3">
+                      <div className="flex items-center justify-between">
+                        <p className="font-bold text-sm text-gray-800">{t.name}</p>
+                        {templateId === t.id && (
+                          <span className="text-xs font-bold text-[#7A1515] bg-[#f5e8e8] px-2 py-0.5 rounded-full">Selecionado</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500 mt-0.5">{t.description}</p>
+                    </div>
                   </button>
-                  <button
-                    onClick={handleDownload}
-                    disabled={isDownloading}
-                    className="flex items-center gap-2 bg-[#7A1515] hover:bg-[#6B1010] text-white font-bold px-6 py-2 rounded-lg shadow hover:shadow-md transition-all disabled:opacity-60"
-                  >
-                    {isDownloading ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-                    {isDownloading ? "Gerando PDF..." : "Baixar PDF"}
-                  </button>
-                </div>
+                ))}
               </div>
+              <div className="flex justify-between pt-2 border-t border-gray-100">
+                <button
+                  onClick={() => { setStep(7); saveCurrentStep(7); window.scrollTo(0, 0); }}
+                  className="text-sm text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  ← Voltar
+                </button>
+                <button
+                  onClick={handleDownload}
+                  disabled={isDownloading}
+                  className="flex items-center gap-2 bg-[#7A1515] hover:bg-[#6B1010] text-white font-bold px-8 py-3 rounded-xl shadow hover:shadow-md transition-all disabled:opacity-60"
+                >
+                  {isDownloading ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+                  {isDownloading ? "Gerando PDF..." : "Baixar PDF"}
+                </button>
+              </div>
+            </Card>
+
+            {/* Preview ao vivo */}
+            <div className="space-y-3">
+              <p className="text-sm text-gray-500 text-center font-medium">Preview — modelo <span className="text-[#7A1515] font-bold">{TEMPLATES.find(t => t.id === templateId)?.name}</span></p>
+              <ResumePreview data={data} generated={generated} templateId={templateId} />
             </div>
-            <ResumePreview data={data} generated={generated} />
+
             <div className="text-center pb-8">
               <button
                 onClick={handleDownload}
@@ -499,6 +525,64 @@ function Card({ title, subtitle, children }: { title: string; subtitle?: string;
         {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
       </div>
       {children}
+    </div>
+  );
+}
+
+function TemplateThumbnail({ id, selected }: { id: TemplateId; selected: boolean }) {
+  const ring = selected ? "ring-2 ring-[#7A1515]" : "ring-1 ring-gray-200";
+
+  if (id === "classico") return (
+    <div className={`rounded-lg overflow-hidden bg-white ${ring} aspect-[3/4] w-full`}>
+      <div className="h-[30%] bg-white border-b-2 border-[#7A1515] p-1.5">
+        <div className="w-10 h-1.5 bg-gray-800 rounded mb-1" />
+        <div className="w-14 h-1 bg-[#7A1515] rounded mb-1" />
+        <div className="flex gap-1"><div className="w-8 h-0.5 bg-gray-300 rounded"/><div className="w-6 h-0.5 bg-gray-300 rounded"/></div>
+      </div>
+      <div className="p-1.5 space-y-1.5">
+        {[1,2,3].map(i => <div key={i}><div className="w-12 h-0.5 bg-[#7A1515] rounded mb-0.5"/><div className="w-full h-1 bg-gray-100 rounded"/></div>)}
+      </div>
+    </div>
+  );
+
+  if (id === "minimalista") return (
+    <div className={`rounded-lg overflow-hidden bg-white ${ring} aspect-[3/4] w-full`}>
+      <div className="h-[30%] bg-white border-b border-gray-900 p-1.5">
+        <div className="w-12 h-2 bg-gray-900 rounded mb-1" />
+        <div className="w-10 h-0.5 bg-gray-500 rounded mb-1" />
+        <div className="flex gap-1"><div className="w-6 h-0.5 bg-gray-400 rounded"/><div className="w-6 h-0.5 bg-gray-400 rounded"/></div>
+      </div>
+      <div className="p-1.5 space-y-1.5">
+        {[1,2,3].map(i => <div key={i}><div className="w-12 h-0.5 bg-gray-800 rounded mb-0.5"/><div className="w-full h-1 bg-gray-100 rounded"/></div>)}
+      </div>
+    </div>
+  );
+
+  if (id === "corporativo") return (
+    <div className={`rounded-lg overflow-hidden bg-white ${ring} aspect-[3/4] w-full`}>
+      <div className="h-[32%] bg-[#1E3A8A] p-1.5">
+        <div className="w-10 h-1.5 bg-white rounded mb-1" />
+        <div className="w-14 h-1 bg-blue-300 rounded mb-1" />
+        <div className="flex gap-1"><div className="w-8 h-0.5 bg-blue-200 rounded"/><div className="w-6 h-0.5 bg-blue-200 rounded"/></div>
+      </div>
+      <div className="p-1.5 space-y-1.5">
+        {[1,2,3].map(i => <div key={i}><div className="w-12 h-0.5 bg-[#1E3A8A] rounded mb-0.5"/><div className="w-full h-1 bg-blue-50 rounded"/></div>)}
+      </div>
+    </div>
+  );
+
+  // moderno
+  return (
+    <div className={`rounded-lg overflow-hidden ${ring} aspect-[3/4] w-full flex`}>
+      <div className="w-[36%] bg-[#1E1E1E] p-1.5 space-y-1.5">
+        <div className="w-6 h-6 rounded-full bg-gray-600 mx-auto" />
+        <div className="w-8 h-1 bg-white rounded mx-auto" />
+        <div className="w-6 h-0.5 bg-red-400 rounded mx-auto" />
+        <div className="space-y-0.5 mt-1">{[1,2,3,4].map(i=><div key={i} className="w-full h-0.5 bg-gray-600 rounded"/>)}</div>
+      </div>
+      <div className="flex-1 bg-white p-1.5 space-y-1.5">
+        {[1,2,3].map(i => <div key={i}><div className="w-10 h-0.5 bg-[#C0392B] rounded mb-0.5"/><div className="w-full h-1 bg-gray-100 rounded"/></div>)}
+      </div>
     </div>
   );
 }

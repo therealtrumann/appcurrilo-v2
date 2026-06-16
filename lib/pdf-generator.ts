@@ -1,308 +1,447 @@
-import { Document, Page, Text, View, StyleSheet, Font, Image, pdf } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image, pdf } from "@react-pdf/renderer";
 import { createElement } from "react";
 import { ResumeData, GeneratedResume } from "@/types/resume";
+import { TemplateId } from "@/lib/templates";
 
-const WINE = "#7A1515";
-const DARK = "#1a1a1a";
-const GRAY = "#555555";
-const LIGHT_GRAY = "#f5f5f5";
-const BORDER = "#e0e0e0";
+// ─── Clássico ────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
-  page: {
-    fontFamily: "Helvetica",
-    fontSize: 10,
-    color: DARK,
-    paddingTop: 40,
-    paddingBottom: 40,
-    paddingHorizontal: 45,
-    backgroundColor: "#ffffff",
-  },
-  header: {
-    marginBottom: 16,
-    paddingBottom: 16,
-    borderBottomWidth: 2,
-    borderBottomColor: WINE,
-  },
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 16,
-  },
-  photo: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    borderWidth: 2,
-    borderColor: WINE,
-    objectFit: "cover",
-  },
-  headerInfo: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 20,
-    fontFamily: "Helvetica-Bold",
-    color: DARK,
-    marginBottom: 2,
-  },
-  title: {
-    fontSize: 10,
-    color: WINE,
-    marginBottom: 8,
-    fontFamily: "Helvetica-Oblique",
-  },
-  contactRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  contactItem: {
-    fontSize: 8.5,
-    color: GRAY,
-  },
-  section: {
-    marginBottom: 14,
-  },
-  sectionTitle: {
-    fontSize: 11,
-    fontFamily: "Helvetica-Bold",
-    color: WINE,
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-    marginBottom: 6,
-    paddingBottom: 3,
-    borderBottomWidth: 1,
-    borderBottomColor: BORDER,
-  },
-  summaryText: {
-    fontSize: 9.5,
-    color: DARK,
-    lineHeight: 1.6,
-  },
-  skillsRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 5,
-    marginTop: 2,
-  },
-  skillTag: {
-    backgroundColor: LIGHT_GRAY,
-    borderRadius: 3,
-    paddingHorizontal: 7,
-    paddingVertical: 3,
-    fontSize: 8.5,
-    color: DARK,
-  },
-  skillsLabel: {
-    fontSize: 9,
-    fontFamily: "Helvetica-Bold",
-    color: GRAY,
-    marginBottom: 4,
-    marginTop: 6,
-  },
-  expItem: {
-    marginBottom: 12,
-  },
-  expHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 2,
-  },
-  expCompany: {
-    fontSize: 10,
-    fontFamily: "Helvetica-Bold",
-    color: DARK,
-  },
-  expRole: {
-    fontSize: 9.5,
-    color: WINE,
-    fontFamily: "Helvetica-Oblique",
-    marginBottom: 4,
-  },
-  expPeriod: {
-    fontSize: 8.5,
-    color: GRAY,
-    textAlign: "right",
-  },
-  bullet: {
-    flexDirection: "row",
-    marginBottom: 2,
-    paddingLeft: 2,
-  },
-  bulletDot: {
-    width: 10,
-    fontSize: 9,
-    color: WINE,
-  },
-  bulletText: {
-    flex: 1,
-    fontSize: 9,
-    color: DARK,
-    lineHeight: 1.5,
-  },
-  courseItem: {
-    marginBottom: 6,
-  },
-  courseName: {
-    fontSize: 9.5,
-    fontFamily: "Helvetica-Bold",
-    color: DARK,
-  },
-  courseDetail: {
-    fontSize: 8.5,
-    color: GRAY,
-  },
-  eduItem: {
-    marginBottom: 6,
-  },
-  eduLevel: {
-    fontSize: 9.5,
-    fontFamily: "Helvetica-Bold",
-    color: DARK,
-  },
-  eduDetail: {
-    fontSize: 8.5,
-    color: GRAY,
-  },
-  infoRow: {
-    flexDirection: "row",
-    gap: 20,
-    flexWrap: "wrap",
-  },
-  infoItem: {
-    fontSize: 9,
-    color: DARK,
-  },
-  infoLabel: {
-    fontFamily: "Helvetica-Bold",
-    color: WINE,
-  },
+const classico = StyleSheet.create({
+  page: { fontFamily: "Helvetica", fontSize: 10, color: "#1a1a1a", paddingTop: 40, paddingBottom: 40, paddingHorizontal: 45, backgroundColor: "#ffffff" },
+  header: { marginBottom: 16, paddingBottom: 16, borderBottomWidth: 2, borderBottomColor: "#7A1515" },
+  headerRow: { flexDirection: "row", alignItems: "flex-start", gap: 16 },
+  photo: { width: 70, height: 70, borderRadius: 35, borderWidth: 2, borderColor: "#7A1515", objectFit: "cover" },
+  headerInfo: { flex: 1 },
+  name: { fontSize: 20, fontFamily: "Helvetica-Bold", color: "#1a1a1a", marginBottom: 2 },
+  title: { fontSize: 10, color: "#7A1515", marginBottom: 8, fontFamily: "Helvetica-Oblique" },
+  contactRow: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
+  contactItem: { fontSize: 8.5, color: "#555555" },
+  section: { marginBottom: 14 },
+  sectionTitle: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#7A1515", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, paddingBottom: 3, borderBottomWidth: 1, borderBottomColor: "#e0e0e0" },
+  summaryText: { fontSize: 9.5, color: "#1a1a1a", lineHeight: 1.6 },
+  skillsRow: { flexDirection: "row", flexWrap: "wrap", gap: 5, marginTop: 2 },
+  skillTag: { backgroundColor: "#f5f5f5", borderRadius: 3, paddingHorizontal: 7, paddingVertical: 3, fontSize: 8.5, color: "#1a1a1a" },
+  skillsLabel: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#555555", marginBottom: 4, marginTop: 6 },
+  expItem: { marginBottom: 12 },
+  expHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 2 },
+  expCompany: { fontSize: 10, fontFamily: "Helvetica-Bold", color: "#1a1a1a" },
+  expRole: { fontSize: 9.5, color: "#7A1515", fontFamily: "Helvetica-Oblique", marginBottom: 4 },
+  expPeriod: { fontSize: 8.5, color: "#555555", textAlign: "right" },
+  bullet: { flexDirection: "row", marginBottom: 2, paddingLeft: 2 },
+  bulletDot: { width: 10, fontSize: 9, color: "#7A1515" },
+  bulletText: { flex: 1, fontSize: 9, color: "#1a1a1a", lineHeight: 1.5 },
+  subItem: { marginBottom: 6 },
+  subName: { fontSize: 9.5, fontFamily: "Helvetica-Bold", color: "#1a1a1a" },
+  subDetail: { fontSize: 8.5, color: "#555555" },
+  infoRow: { flexDirection: "row", gap: 20, flexWrap: "wrap" },
+  infoItem: { fontSize: 9, color: "#1a1a1a" },
+  infoLabel: { fontFamily: "Helvetica-Bold", color: "#7A1515" },
 });
 
-function createPDFDocument(data: ResumeData, generated: GeneratedResume) {
-  const hasPhoto = !!data.photo;
-
+function classicoDoc(data: ResumeData, g: GeneratedResume) {
+  const s = classico;
   return createElement(Document, {},
-    createElement(Page, { size: "A4", style: styles.page },
-      // Header
-      createElement(View, { style: styles.header },
-        createElement(View, { style: styles.headerRow },
-          hasPhoto ? createElement(Image, { src: data.photo!, style: styles.photo }) : null,
-          createElement(View, { style: styles.headerInfo },
-            createElement(Text, { style: styles.name }, data.fullName),
-            createElement(Text, { style: styles.title }, generated.professionalTitle),
-            createElement(View, { style: styles.contactRow },
-              createElement(Text, { style: styles.contactItem }, `📍 ${data.cityState}`),
-              createElement(Text, { style: styles.contactItem }, `📱 ${data.phone}`),
-              createElement(Text, { style: styles.contactItem }, `✉ ${data.email}`),
-              data.linkedin ? createElement(Text, { style: styles.contactItem }, `LinkedIn: ${data.linkedin}`) : null,
+    createElement(Page, { size: "A4", style: s.page },
+      createElement(View, { style: s.header },
+        createElement(View, { style: s.headerRow },
+          data.photo ? createElement(Image, { src: data.photo, style: s.photo }) : null,
+          createElement(View, { style: s.headerInfo },
+            createElement(Text, { style: s.name }, data.fullName),
+            createElement(Text, { style: s.title }, g.professionalTitle),
+            createElement(View, { style: s.contactRow },
+              createElement(Text, { style: s.contactItem }, `📍 ${data.cityState}`),
+              createElement(Text, { style: s.contactItem }, `📱 ${data.phone}`),
+              createElement(Text, { style: s.contactItem }, `✉ ${data.email}`),
+              data.linkedin ? createElement(Text, { style: s.contactItem }, `LinkedIn: ${data.linkedin}`) : null,
             ),
           ),
         ),
       ),
-
-      // Resumo
-      createElement(View, { style: styles.section },
-        createElement(Text, { style: styles.sectionTitle }, "Resumo Profissional"),
-        createElement(Text, { style: styles.summaryText }, generated.professionalSummary),
+      createElement(View, { style: s.section },
+        createElement(Text, { style: s.sectionTitle }, "Resumo Profissional"),
+        createElement(Text, { style: s.summaryText }, g.professionalSummary),
       ),
-
-      // Habilidades
-      createElement(View, { style: styles.section },
-        createElement(Text, { style: styles.sectionTitle }, "Habilidades"),
-        generated.professionalSkills.length > 0 ? createElement(View, {},
-          createElement(Text, { style: styles.skillsLabel }, "Competências Profissionais"),
-          createElement(View, { style: styles.skillsRow },
-            ...generated.professionalSkills.map((s, i) =>
-              createElement(Text, { key: i, style: styles.skillTag }, s)
-            ),
-          ),
+      createElement(View, { style: s.section },
+        createElement(Text, { style: s.sectionTitle }, "Habilidades"),
+        g.professionalSkills.length > 0 ? createElement(View, {},
+          createElement(Text, { style: s.skillsLabel }, "Competências Profissionais"),
+          createElement(View, { style: s.skillsRow }, ...g.professionalSkills.map((sk, i) => createElement(Text, { key: i, style: s.skillTag }, sk))),
         ) : null,
-        generated.technicalSkills.length > 0 ? createElement(View, {},
-          createElement(Text, { style: styles.skillsLabel }, "Habilidades Técnicas"),
-          createElement(View, { style: styles.skillsRow },
-            ...generated.technicalSkills.map((s, i) =>
-              createElement(Text, { key: i, style: styles.skillTag }, s)
-            ),
-          ),
+        g.technicalSkills.length > 0 ? createElement(View, {},
+          createElement(Text, { style: s.skillsLabel }, "Habilidades Técnicas"),
+          createElement(View, { style: s.skillsRow }, ...g.technicalSkills.map((sk, i) => createElement(Text, { key: i, style: s.skillTag }, sk))),
         ) : null,
       ),
-
-      // Experiências
-      createElement(View, { style: styles.section },
-        createElement(Text, { style: styles.sectionTitle }, "Experiência Profissional"),
-        ...generated.experiences.map((exp, i) =>
-          createElement(View, { key: i, style: styles.expItem },
-            createElement(View, { style: styles.expHeader },
-              createElement(Text, { style: styles.expCompany }, exp.company),
-              createElement(Text, { style: styles.expPeriod }, `${exp.startDate} – ${exp.endDate}${exp.location ? ` · ${exp.location}` : ""}`),
-            ),
-            createElement(Text, { style: styles.expRole }, exp.role),
-            ...exp.bullets.map((bullet, bi) =>
-              createElement(View, { key: bi, style: styles.bullet },
-                createElement(Text, { style: styles.bulletDot }, "•"),
-                createElement(Text, { style: styles.bulletText }, bullet),
-              )
-            ),
-          )
-        ),
+      createElement(View, { style: s.section },
+        createElement(Text, { style: s.sectionTitle }, "Experiência Profissional"),
+        ...g.experiences.map((exp, i) => createElement(View, { key: i, style: s.expItem },
+          createElement(View, { style: s.expHeader },
+            createElement(Text, { style: s.expCompany }, exp.company),
+            createElement(Text, { style: s.expPeriod }, `${exp.startDate} – ${exp.endDate}${exp.location ? ` · ${exp.location}` : ""}`),
+          ),
+          createElement(Text, { style: s.expRole }, exp.role),
+          ...exp.bullets.map((b, bi) => createElement(View, { key: bi, style: s.bullet },
+            createElement(Text, { style: s.bulletDot }, "•"),
+            createElement(Text, { style: s.bulletText }, b),
+          )),
+        )),
       ),
-
-      // Cursos
-      generated.courses.length > 0 ? createElement(View, { style: styles.section },
-        createElement(Text, { style: styles.sectionTitle }, "Cursos e Formações Complementares"),
-        ...generated.courses.map((c, i) =>
-          createElement(View, { key: i, style: styles.courseItem },
-            createElement(Text, { style: styles.courseName }, c.name),
-            createElement(Text, { style: styles.courseDetail },
-              [c.institution, c.workload ? `${c.workload}h` : null, c.status !== "Não informado" ? c.status : null]
-                .filter(Boolean).join(" · ")
-            ),
-          )
-        ),
+      g.courses.length > 0 ? createElement(View, { style: s.section },
+        createElement(Text, { style: s.sectionTitle }, "Cursos e Formações Complementares"),
+        ...g.courses.map((c, i) => createElement(View, { key: i, style: s.subItem },
+          createElement(Text, { style: s.subName }, c.name),
+          createElement(Text, { style: s.subDetail }, [c.institution, c.workload ? `${c.workload}h` : null, c.status !== "Não informado" ? c.status : null].filter(Boolean).join(" · ")),
+        )),
       ) : null,
-
-      // Formação
-      generated.education.length > 0 ? createElement(View, { style: styles.section },
-        createElement(Text, { style: styles.sectionTitle }, "Formação Acadêmica"),
-        ...generated.education.map((e, i) =>
-          createElement(View, { key: i, style: styles.eduItem },
-            createElement(Text, { style: styles.eduLevel }, e.level),
-            createElement(Text, { style: styles.eduDetail },
-              [e.course, e.institution, e.year].filter(Boolean).join(" · ")
-            ),
-          )
-        ),
+      g.education.length > 0 ? createElement(View, { style: s.section },
+        createElement(Text, { style: s.sectionTitle }, "Formação Acadêmica"),
+        ...g.education.map((e, i) => createElement(View, { key: i, style: s.subItem },
+          createElement(Text, { style: s.subName }, e.level),
+          createElement(Text, { style: s.subDetail }, [e.course, e.institution, e.year].filter(Boolean).join(" · ")),
+        )),
       ) : null,
-
-      // Info complementares
-      createElement(View, { style: styles.section },
-        createElement(Text, { style: styles.sectionTitle }, "Informações Complementares"),
-        createElement(View, { style: styles.infoRow },
-          createElement(Text, { style: styles.infoItem },
-            createElement(Text, { style: styles.infoLabel }, "Disponibilidade: ") as any,
-            generated.availability
-          ),
-          createElement(Text, { style: styles.infoItem },
-            createElement(Text, { style: styles.infoLabel }, "Regime: ") as any,
-            generated.workPreference
-          ),
-          generated.languages ? createElement(Text, { style: styles.infoItem },
-            createElement(Text, { style: styles.infoLabel }, "Idiomas: ") as any,
-            generated.languages
-          ) : null,
+      createElement(View, { style: s.section },
+        createElement(Text, { style: s.sectionTitle }, "Informações Complementares"),
+        createElement(View, { style: s.infoRow },
+          createElement(Text, { style: s.infoItem }, createElement(Text, { style: s.infoLabel }, "Disponibilidade: ") as any, g.availability),
+          createElement(Text, { style: s.infoItem }, createElement(Text, { style: s.infoLabel }, "Regime: ") as any, g.workPreference),
+          g.languages ? createElement(Text, { style: s.infoItem }, createElement(Text, { style: s.infoLabel }, "Idiomas: ") as any, g.languages) : null,
         ),
       ),
     )
   );
 }
 
-export async function generatePDF(data: ResumeData, generated: GeneratedResume): Promise<Blob> {
-  const doc = createPDFDocument(data, generated);
-  const blob = await pdf(doc).toBlob();
-  return blob;
+// ─── Minimalista ──────────────────────────────────────────────────────────────
+
+const minimal = StyleSheet.create({
+  page: { fontFamily: "Helvetica", fontSize: 10, color: "#1a1a1a", paddingTop: 48, paddingBottom: 40, paddingHorizontal: 50, backgroundColor: "#ffffff" },
+  header: { marginBottom: 20, paddingBottom: 14, borderBottomWidth: 1, borderBottomColor: "#1a1a1a" },
+  name: { fontSize: 22, fontFamily: "Helvetica-Bold", color: "#1a1a1a", marginBottom: 3 },
+  title: { fontSize: 10, color: "#555555", marginBottom: 8 },
+  contactRow: { flexDirection: "row", flexWrap: "wrap", gap: 14 },
+  contactItem: { fontSize: 8.5, color: "#555555" },
+  section: { marginBottom: 14 },
+  sectionTitle: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#1a1a1a", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6, paddingBottom: 2, borderBottomWidth: 0.5, borderBottomColor: "#1a1a1a" },
+  summaryText: { fontSize: 9.5, color: "#333333", lineHeight: 1.7 },
+  skillsText: { fontSize: 9, color: "#333333", lineHeight: 1.6 },
+  skillsLabel: { fontSize: 8.5, fontFamily: "Helvetica-Bold", color: "#555555", marginBottom: 3, marginTop: 5 },
+  expItem: { marginBottom: 12 },
+  expHeader: { flexDirection: "row", justifyContent: "space-between", marginBottom: 1 },
+  expCompany: { fontSize: 10, fontFamily: "Helvetica-Bold", color: "#1a1a1a" },
+  expRole: { fontSize: 9.5, color: "#555555", marginBottom: 3 },
+  expPeriod: { fontSize: 8.5, color: "#888888" },
+  bullet: { flexDirection: "row", marginBottom: 2 },
+  bulletDot: { width: 10, fontSize: 9, color: "#555555" },
+  bulletText: { flex: 1, fontSize: 9, color: "#333333", lineHeight: 1.5 },
+  subItem: { marginBottom: 5 },
+  subName: { fontSize: 9.5, fontFamily: "Helvetica-Bold", color: "#1a1a1a" },
+  subDetail: { fontSize: 8.5, color: "#666666" },
+  infoRow: { flexDirection: "row", gap: 20, flexWrap: "wrap" },
+  infoItem: { fontSize: 9, color: "#333333" },
+  photo: { width: 65, height: 65, borderRadius: 33, objectFit: "cover", marginBottom: 8 },
+  headerRow: { flexDirection: "row", alignItems: "flex-start", gap: 16 },
+  headerInfo: { flex: 1 },
+});
+
+function minimalistaDoc(data: ResumeData, g: GeneratedResume) {
+  const s = minimal;
+  return createElement(Document, {},
+    createElement(Page, { size: "A4", style: s.page },
+      createElement(View, { style: s.header },
+        createElement(View, { style: s.headerRow },
+          data.photo ? createElement(Image, { src: data.photo, style: s.photo }) : null,
+          createElement(View, { style: s.headerInfo },
+            createElement(Text, { style: s.name }, data.fullName),
+            createElement(Text, { style: s.title }, g.professionalTitle),
+            createElement(View, { style: s.contactRow },
+              createElement(Text, { style: s.contactItem }, data.cityState),
+              createElement(Text, { style: s.contactItem }, data.phone),
+              createElement(Text, { style: s.contactItem }, data.email),
+              data.linkedin ? createElement(Text, { style: s.contactItem }, data.linkedin) : null,
+            ),
+          ),
+        ),
+      ),
+      createElement(View, { style: s.section },
+        createElement(Text, { style: s.sectionTitle }, "Perfil"),
+        createElement(Text, { style: s.summaryText }, g.professionalSummary),
+      ),
+      createElement(View, { style: s.section },
+        createElement(Text, { style: s.sectionTitle }, "Habilidades"),
+        g.professionalSkills.length > 0 ? createElement(View, {},
+          createElement(Text, { style: s.skillsLabel }, "Competências"),
+          createElement(Text, { style: s.skillsText }, g.professionalSkills.join("  ·  ")),
+        ) : null,
+        g.technicalSkills.length > 0 ? createElement(View, {},
+          createElement(Text, { style: s.skillsLabel }, "Técnicas"),
+          createElement(Text, { style: s.skillsText }, g.technicalSkills.join("  ·  ")),
+        ) : null,
+      ),
+      createElement(View, { style: s.section },
+        createElement(Text, { style: s.sectionTitle }, "Experiência"),
+        ...g.experiences.map((exp, i) => createElement(View, { key: i, style: s.expItem },
+          createElement(View, { style: s.expHeader },
+            createElement(Text, { style: s.expCompany }, exp.company),
+            createElement(Text, { style: s.expPeriod }, `${exp.startDate} – ${exp.endDate}`),
+          ),
+          createElement(Text, { style: s.expRole }, exp.role),
+          ...exp.bullets.map((b, bi) => createElement(View, { key: bi, style: s.bullet },
+            createElement(Text, { style: s.bulletDot }, "—"),
+            createElement(Text, { style: s.bulletText }, b),
+          )),
+        )),
+      ),
+      g.courses.length > 0 ? createElement(View, { style: s.section },
+        createElement(Text, { style: s.sectionTitle }, "Cursos"),
+        ...g.courses.map((c, i) => createElement(View, { key: i, style: s.subItem },
+          createElement(Text, { style: s.subName }, c.name),
+          createElement(Text, { style: s.subDetail }, [c.institution, c.workload ? `${c.workload}h` : null].filter(Boolean).join(" · ")),
+        )),
+      ) : null,
+      g.education.length > 0 ? createElement(View, { style: s.section },
+        createElement(Text, { style: s.sectionTitle }, "Formação"),
+        ...g.education.map((e, i) => createElement(View, { key: i, style: s.subItem },
+          createElement(Text, { style: s.subName }, e.level),
+          createElement(Text, { style: s.subDetail }, [e.course, e.institution, e.year].filter(Boolean).join(" · ")),
+        )),
+      ) : null,
+      createElement(View, { style: s.section },
+        createElement(Text, { style: s.sectionTitle }, "Informações"),
+        createElement(View, { style: s.infoRow },
+          createElement(Text, { style: s.infoItem }, `Disponibilidade: ${g.availability}`),
+          createElement(Text, { style: s.infoItem }, `Regime: ${g.workPreference}`),
+          g.languages ? createElement(Text, { style: s.infoItem }, `Idiomas: ${g.languages}`) : null,
+        ),
+      ),
+    )
+  );
+}
+
+// ─── Corporativo ─────────────────────────────────────────────────────────────
+
+const corp = StyleSheet.create({
+  page: { fontFamily: "Helvetica", fontSize: 10, color: "#1a1a1a", paddingBottom: 40, paddingHorizontal: 0, backgroundColor: "#ffffff" },
+  headerBlock: { backgroundColor: "#1E3A8A", paddingHorizontal: 45, paddingTop: 36, paddingBottom: 28 },
+  headerRow: { flexDirection: "row", alignItems: "flex-start", gap: 16 },
+  photo: { width: 70, height: 70, borderRadius: 35, borderWidth: 2, borderColor: "#93C5FD", objectFit: "cover" },
+  headerInfo: { flex: 1 },
+  name: { fontSize: 20, fontFamily: "Helvetica-Bold", color: "#ffffff", marginBottom: 2 },
+  title: { fontSize: 10, color: "#93C5FD", marginBottom: 8, fontFamily: "Helvetica-Oblique" },
+  contactRow: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
+  contactItem: { fontSize: 8.5, color: "rgba(255,255,255,0.75)" },
+  body: { paddingHorizontal: 45, paddingTop: 24 },
+  section: { marginBottom: 14 },
+  sectionTitle: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#1E3A8A", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, paddingBottom: 3, borderBottomWidth: 1, borderBottomColor: "#BFDBFE" },
+  summaryText: { fontSize: 9.5, color: "#1a1a1a", lineHeight: 1.6 },
+  skillsRow: { flexDirection: "row", flexWrap: "wrap", gap: 5, marginTop: 2 },
+  skillTag: { backgroundColor: "#EFF6FF", borderRadius: 3, paddingHorizontal: 7, paddingVertical: 3, fontSize: 8.5, color: "#1E3A8A" },
+  skillsLabel: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#555555", marginBottom: 4, marginTop: 6 },
+  expItem: { marginBottom: 12 },
+  expHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 2 },
+  expCompany: { fontSize: 10, fontFamily: "Helvetica-Bold", color: "#1a1a1a" },
+  expRole: { fontSize: 9.5, color: "#1E3A8A", fontFamily: "Helvetica-Oblique", marginBottom: 4 },
+  expPeriod: { fontSize: 8.5, color: "#555555" },
+  bullet: { flexDirection: "row", marginBottom: 2 },
+  bulletDot: { width: 10, fontSize: 9, color: "#1E3A8A" },
+  bulletText: { flex: 1, fontSize: 9, color: "#1a1a1a", lineHeight: 1.5 },
+  subItem: { marginBottom: 5 },
+  subName: { fontSize: 9.5, fontFamily: "Helvetica-Bold", color: "#1a1a1a" },
+  subDetail: { fontSize: 8.5, color: "#555555" },
+  infoRow: { flexDirection: "row", gap: 20, flexWrap: "wrap" },
+  infoItem: { fontSize: 9, color: "#1a1a1a" },
+  infoLabel: { fontFamily: "Helvetica-Bold", color: "#1E3A8A" },
+});
+
+function corporativoDoc(data: ResumeData, g: GeneratedResume) {
+  const s = corp;
+  return createElement(Document, {},
+    createElement(Page, { size: "A4", style: s.page },
+      createElement(View, { style: s.headerBlock },
+        createElement(View, { style: s.headerRow },
+          data.photo ? createElement(Image, { src: data.photo, style: s.photo }) : null,
+          createElement(View, { style: s.headerInfo },
+            createElement(Text, { style: s.name }, data.fullName),
+            createElement(Text, { style: s.title }, g.professionalTitle),
+            createElement(View, { style: s.contactRow },
+              createElement(Text, { style: s.contactItem }, `📍 ${data.cityState}`),
+              createElement(Text, { style: s.contactItem }, `📱 ${data.phone}`),
+              createElement(Text, { style: s.contactItem }, `✉ ${data.email}`),
+              data.linkedin ? createElement(Text, { style: s.contactItem }, `LinkedIn: ${data.linkedin}`) : null,
+            ),
+          ),
+        ),
+      ),
+      createElement(View, { style: s.body },
+        createElement(View, { style: s.section },
+          createElement(Text, { style: s.sectionTitle }, "Resumo Profissional"),
+          createElement(Text, { style: s.summaryText }, g.professionalSummary),
+        ),
+        createElement(View, { style: s.section },
+          createElement(Text, { style: s.sectionTitle }, "Habilidades"),
+          g.professionalSkills.length > 0 ? createElement(View, {},
+            createElement(Text, { style: s.skillsLabel }, "Competências Profissionais"),
+            createElement(View, { style: s.skillsRow }, ...g.professionalSkills.map((sk, i) => createElement(Text, { key: i, style: s.skillTag }, sk))),
+          ) : null,
+          g.technicalSkills.length > 0 ? createElement(View, {},
+            createElement(Text, { style: s.skillsLabel }, "Habilidades Técnicas"),
+            createElement(View, { style: s.skillsRow }, ...g.technicalSkills.map((sk, i) => createElement(Text, { key: i, style: s.skillTag }, sk))),
+          ) : null,
+        ),
+        createElement(View, { style: s.section },
+          createElement(Text, { style: s.sectionTitle }, "Experiência Profissional"),
+          ...g.experiences.map((exp, i) => createElement(View, { key: i, style: s.expItem },
+            createElement(View, { style: s.expHeader },
+              createElement(Text, { style: s.expCompany }, exp.company),
+              createElement(Text, { style: s.expPeriod }, `${exp.startDate} – ${exp.endDate}${exp.location ? ` · ${exp.location}` : ""}`),
+            ),
+            createElement(Text, { style: s.expRole }, exp.role),
+            ...exp.bullets.map((b, bi) => createElement(View, { key: bi, style: s.bullet },
+              createElement(Text, { style: s.bulletDot }, "•"),
+              createElement(Text, { style: s.bulletText }, b),
+            )),
+          )),
+        ),
+        g.courses.length > 0 ? createElement(View, { style: s.section },
+          createElement(Text, { style: s.sectionTitle }, "Cursos e Formações Complementares"),
+          ...g.courses.map((c, i) => createElement(View, { key: i, style: s.subItem },
+            createElement(Text, { style: s.subName }, c.name),
+            createElement(Text, { style: s.subDetail }, [c.institution, c.workload ? `${c.workload}h` : null, c.status !== "Não informado" ? c.status : null].filter(Boolean).join(" · ")),
+          )),
+        ) : null,
+        g.education.length > 0 ? createElement(View, { style: s.section },
+          createElement(Text, { style: s.sectionTitle }, "Formação Acadêmica"),
+          ...g.education.map((e, i) => createElement(View, { key: i, style: s.subItem },
+            createElement(Text, { style: s.subName }, e.level),
+            createElement(Text, { style: s.subDetail }, [e.course, e.institution, e.year].filter(Boolean).join(" · ")),
+          )),
+        ) : null,
+        createElement(View, { style: s.section },
+          createElement(Text, { style: s.sectionTitle }, "Informações Complementares"),
+          createElement(View, { style: s.infoRow },
+            createElement(Text, { style: s.infoItem }, createElement(Text, { style: s.infoLabel }, "Disponibilidade: ") as any, g.availability),
+            createElement(Text, { style: s.infoItem }, createElement(Text, { style: s.infoLabel }, "Regime: ") as any, g.workPreference),
+            g.languages ? createElement(Text, { style: s.infoItem }, createElement(Text, { style: s.infoLabel }, "Idiomas: ") as any, g.languages) : null,
+          ),
+        ),
+      ),
+    )
+  );
+}
+
+// ─── Moderno (two-column) ─────────────────────────────────────────────────────
+
+const mod = StyleSheet.create({
+  page: { fontFamily: "Helvetica", fontSize: 10, color: "#1a1a1a", backgroundColor: "#ffffff", flexDirection: "row" },
+  sidebar: { width: "35%", backgroundColor: "#1E1E1E", padding: 28, flexDirection: "column", gap: 16 },
+  main: { flex: 1, padding: 28, paddingTop: 36 },
+  photo: { width: 72, height: 72, borderRadius: 36, borderWidth: 2, borderColor: "#C0392B", objectFit: "cover", marginBottom: 4 },
+  sName: { fontSize: 15, fontFamily: "Helvetica-Bold", color: "#ffffff", marginBottom: 2 },
+  sTitle: { fontSize: 9, color: "#C0392B", fontFamily: "Helvetica-Oblique" },
+  sLabel: { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#C0392B", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 },
+  sText: { fontSize: 8.5, color: "#cccccc", marginBottom: 3 },
+  sSkill: { fontSize: 8.5, color: "#cccccc", marginBottom: 2 },
+  section: { marginBottom: 14 },
+  sectionTitle: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#C0392B", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, paddingBottom: 2, borderBottomWidth: 0.5, borderBottomColor: "#f0f0f0" },
+  summaryText: { fontSize: 9.5, color: "#1a1a1a", lineHeight: 1.6 },
+  expItem: { marginBottom: 11 },
+  expHeader: { flexDirection: "row", justifyContent: "space-between", marginBottom: 1 },
+  expCompany: { fontSize: 10, fontFamily: "Helvetica-Bold", color: "#1a1a1a" },
+  expRole: { fontSize: 9, color: "#C0392B", fontFamily: "Helvetica-Oblique", marginBottom: 3 },
+  expPeriod: { fontSize: 8, color: "#888888" },
+  bullet: { flexDirection: "row", marginBottom: 2 },
+  bulletDot: { width: 10, fontSize: 9, color: "#C0392B" },
+  bulletText: { flex: 1, fontSize: 8.5, color: "#333333", lineHeight: 1.5 },
+  subItem: { marginBottom: 5 },
+  subName: { fontSize: 9.5, fontFamily: "Helvetica-Bold", color: "#1a1a1a" },
+  subDetail: { fontSize: 8.5, color: "#555555" },
+  infoItem: { fontSize: 9, color: "#333333", marginBottom: 2 },
+  contactBlock: { marginBottom: 2 },
+});
+
+function modernoDoc(data: ResumeData, g: GeneratedResume) {
+  const s = mod;
+  const allSkills = [...g.professionalSkills, ...g.technicalSkills];
+
+  return createElement(Document, {},
+    createElement(Page, { size: "A4", style: s.page },
+      // Sidebar
+      createElement(View, { style: s.sidebar },
+        data.photo ? createElement(Image, { src: data.photo, style: s.photo }) : null,
+        createElement(View, {},
+          createElement(Text, { style: s.sName }, data.fullName),
+          createElement(Text, { style: s.sTitle }, g.professionalTitle),
+        ),
+        createElement(View, { style: s.contactBlock },
+          createElement(Text, { style: s.sLabel }, "Contato"),
+          createElement(Text, { style: s.sText }, `📍 ${data.cityState}`),
+          createElement(Text, { style: s.sText }, `📱 ${data.phone}`),
+          createElement(Text, { style: s.sText }, data.email),
+          data.linkedin ? createElement(Text, { style: s.sText }, data.linkedin) : null,
+        ),
+        allSkills.length > 0 ? createElement(View, {},
+          createElement(Text, { style: s.sLabel }, "Habilidades"),
+          ...allSkills.slice(0, 12).map((sk, i) => createElement(Text, { key: i, style: s.sSkill }, `› ${sk}`)),
+        ) : null,
+        g.languages ? createElement(View, {},
+          createElement(Text, { style: s.sLabel }, "Idiomas"),
+          createElement(Text, { style: s.sText }, g.languages),
+        ) : null,
+        createElement(View, {},
+          createElement(Text, { style: s.sLabel }, "Disponibilidade"),
+          createElement(Text, { style: s.sText }, g.availability),
+          createElement(Text, { style: s.sText }, g.workPreference),
+        ),
+      ),
+      // Main
+      createElement(View, { style: s.main },
+        createElement(View, { style: s.section },
+          createElement(Text, { style: s.sectionTitle }, "Resumo Profissional"),
+          createElement(Text, { style: s.summaryText }, g.professionalSummary),
+        ),
+        createElement(View, { style: s.section },
+          createElement(Text, { style: s.sectionTitle }, "Experiência Profissional"),
+          ...g.experiences.map((exp, i) => createElement(View, { key: i, style: s.expItem },
+            createElement(View, { style: s.expHeader },
+              createElement(Text, { style: s.expCompany }, exp.company),
+              createElement(Text, { style: s.expPeriod }, `${exp.startDate} – ${exp.endDate}`),
+            ),
+            createElement(Text, { style: s.expRole }, exp.role),
+            ...exp.bullets.map((b, bi) => createElement(View, { key: bi, style: s.bullet },
+              createElement(Text, { style: s.bulletDot }, "•"),
+              createElement(Text, { style: s.bulletText }, b),
+            )),
+          )),
+        ),
+        g.courses.length > 0 ? createElement(View, { style: s.section },
+          createElement(Text, { style: s.sectionTitle }, "Cursos"),
+          ...g.courses.map((c, i) => createElement(View, { key: i, style: s.subItem },
+            createElement(Text, { style: s.subName }, c.name),
+            createElement(Text, { style: s.subDetail }, [c.institution, c.workload ? `${c.workload}h` : null].filter(Boolean).join(" · ")),
+          )),
+        ) : null,
+        g.education.length > 0 ? createElement(View, { style: s.section },
+          createElement(Text, { style: s.sectionTitle }, "Formação Acadêmica"),
+          ...g.education.map((e, i) => createElement(View, { key: i, style: s.subItem },
+            createElement(Text, { style: s.subName }, e.level),
+            createElement(Text, { style: s.subDetail }, [e.course, e.institution, e.year].filter(Boolean).join(" · ")),
+          )),
+        ) : null,
+      ),
+    )
+  );
+}
+
+// ─── Public API ───────────────────────────────────────────────────────────────
+
+export async function generatePDF(data: ResumeData, generated: GeneratedResume, templateId: TemplateId = "classico"): Promise<Blob> {
+  let doc;
+  switch (templateId) {
+    case "minimalista": doc = minimalistaDoc(data, generated); break;
+    case "corporativo": doc = corporativoDoc(data, generated); break;
+    case "moderno":     doc = modernoDoc(data, generated); break;
+    default:            doc = classicoDoc(data, generated);
+  }
+  return pdf(doc).toBlob();
 }
 
 export function getFileName(name: string): string {
