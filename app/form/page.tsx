@@ -86,7 +86,9 @@ export default function FormPage() {
         education: (saved.education && saved.education.length > 0) ? saved.education : prev.education,
         courses: saved.courses || [],
       }));
-      setStep(savedStep || 0);
+      // Se estava na etapa de modelo (8), generated não é persistido — volta para revisão
+      const resolvedStep = savedStep === 8 ? 7 : (savedStep || 0);
+      setStep(resolvedStep);
     }
   }, []);
 
